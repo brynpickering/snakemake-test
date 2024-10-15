@@ -8,10 +8,36 @@ from pathlib import Path
 configfile: "../config/default.yaml"
 
 
+rule create_all_files:
+    input:
+        "build/table_multiplied_by_2.csv",
+        "build/table_multiplied_by_10.csv",
+        "build/table_multiplied_by_100.csv",
+        "build/table_multiplied_by_205.csv",
+        "build/printed.txt"
+    default_target: True
+
 rule create_file_with_print_statement:
     message: "Create a file and fill it with the configured print statement"
     output: "build/printed.txt"
     params:
-        to_print = config["to-print"]
-    conda: THIS_DIR / "envs" / "default.yaml"
-    script: THIS_DIR / "scripts" / "save_to_print.py"
+        to_print = config["to_print"]
+    conda: "envs/default.yaml"
+    script: "scripts/save_to_print.py"
+
+rule create_csv:
+    message: "Create a CSV file from configuration option."
+    params:
+        to_csv = config["to_csv"]
+    conda: "envs/default.yaml"
+    output: "build/table.csv"
+    script: "scripts/to_csv.py"
+
+rule create_csv_multiplied:
+    message: "Multiply the values in the previously created CSV file by {wildcards.multiplier}."
+    input:
+        to_multiply = "build/table.csv"
+    conda: "envs/default.yaml"
+    output:
+        multiplied = "build/table_multiplied_by_{multiplier}.csv"
+    script: "scripts/multiply_csv.py"
