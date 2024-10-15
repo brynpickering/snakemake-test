@@ -5,8 +5,8 @@
 
 from pathlib import Path
 
-THIS_DIR = Path(__file__).parent
-configfile: THIS_DIR.parent / "config" / "default.yaml"
+configfile: "../config/default.yaml"
+
 
 rule create_file_with_print_statement:
     message: "Create a file and fill it with the configured print statement"
