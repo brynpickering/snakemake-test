@@ -1,4 +1,17 @@
-# Main entrypoint of the workflow. 
-# Please follow the best practices: 
+# Main entrypoint of the workflow.
+# Please follow the best practices:
 # https://snakemake.readthedocs.io/en/stable/snakefiles/best_practices.html,
-# in particular regarding the standardized folder structure mentioned there. 
+# in particular regarding the standardized folder structure mentioned there.
+
+from pathlib import Path
+
+THIS_DIR = Path(__file__).parent
+configfile: THIS_DIR.parent / "config" / "default.yaml"
+
+rule create_file_with_print_statement:
+    message: "Create a file and fill it with the configured print statement"
+    output: "build/printed.txt"
+    params:
+        to_print = config["to-print"]
+    conda: THIS_DIR / "envs" / "default.yaml"
+    script: THIS_DIR / "scripts" / "save_to_print.py"
